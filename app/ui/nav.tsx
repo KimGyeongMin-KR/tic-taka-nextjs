@@ -1,51 +1,71 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import { usePathname } from 'next/navigation';
+
+import { FaRegSquarePlus } from "react-icons/fa6";
+import { GrHomeRounded } from "react-icons/gr";
+import { LuHistory } from "react-icons/lu";
+import { CgProfile } from "react-icons/cg"
+import { IoSearch } from "react-icons/io5";
+
+import clsx from 'clsx';
+
+
+const links = [
+  { name: "Home", href: '/', icon: GrHomeRounded, style: {fontSize: "1.4rem"}},
+  { name: "Search", href: '/trending', icon: IoSearch, style: {fontSize: "1.5rem"}},
+  { name: "Add", href: '/post', icon: FaRegSquarePlus, style: {fontSize: "1.4rem"}},
+  { name: "History", href: '/feed/history', icon: LuHistory, style: {fontSize: "1.5rem"}},
+  { name: "Profile", href: '/feed/you', icon: CgProfile, style: {fontSize: "1.4rem"}},
+]
+
 
 const Navbar = () => {
-    const [isLargeScreen, setIsLargeScreen] = useState(false);
+  const [isLargeScreen, setIsLargeScreen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const checkScreenWidth = () => {
       setIsLargeScreen(window.innerWidth >= 800);
-      console.log('hihi', window.innerWidth, 'px')
     };
 
-    // 초기화
-    checkScreenWidth();
-
-    // 리사이즈 이벤트에 대한 이벤트 리스너 등록
     window.addEventListener('resize', checkScreenWidth);
 
-    // 컴포넌트 언마운트 시 이벤트 리스너 제거
     return () => {
       window.removeEventListener('resize', checkScreenWidth);
     };
   }, []);
-//   로그인 됐을 때{`/feed/${username}`}
-//   로그인 안 됐을 때{'/signin'}
+  useEffect(() => {
+    setIsLargeScreen(window.innerWidth >= 800);
+  }, []);
+
   return (
-    <nav className={isLargeScreen ? "fixed left-0 bottom-0 h-full w-20 bg-black shadow-sm z-10" : "fixed bottom-0 w-full bg-black shadow-sm z-10"}>
-      <ul className={isLargeScreen ? "flex flex-col justify-center items-center space-y-10" : "h-10 flex justify-center items-center space-x-5"}>
-      <Link href={'/'}>
-        <li className={isLargeScreen ? "text-white mt-10" : "text-white"}>Home</li>
-      </Link>
-      <Link href={'/?tranding=true'}>
-        <li className="text-white">인기</li>
-      </Link>
-      <Link href={'/post'}>
-        <li className="text-white">+</li>
-      </Link>
-      <Link href={'/feed/history'}>
-        <li className="text-white">히스토리</li>
-      </Link>
-      <Link href={'/feed/you'}>
-        <li className="text-white">프로필</li>
-      </Link>
+    <nav className={isLargeScreen ? "fixed left-0 bottom-0 h-full w-20 bg-gray-100 shadow-sm z-10" : `fixed bottom-0 w-full bg-gray-100 shadow-sm z-10`}>
+      <ul className={isLargeScreen ? "flex flex-col justify-center items-center space-y-20" : "h-10 flex justify-center items-center space-x-10"}>
+      {links.map((link, idx) => {
+        const LinkIcon = link.icon;
+        return (
+          <Link
+            key={link.name}
+            href={link.href}
+            className={clsx(
+              {
+                'mt-10': (idx === 0 && isLargeScreen),
+                // 'text-fuchsia-700': pathname === link.href,
+                'text-amber-500': pathname === link.href,
+                // 'text-rose-500': pathname === link.href,
+              },
+            )}
+            style={link.style}
+          >
+            <LinkIcon />
+          </Link>
+        );
+      })}
     </ul>
   </nav>
   );
 };
 
-export default Navbar;
+export default Navbar;;
