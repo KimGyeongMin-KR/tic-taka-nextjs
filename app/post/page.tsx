@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from 'react';
 import { createPost } from '@/app/lib/actions/post';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 export default function Page(){
   const [subject, setSubject] = useState('');
@@ -12,7 +12,6 @@ export default function Page(){
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const initialState = { message: null, errors: {} };
   const [state, setFormState] = useState(initialState); // 초기 옵션 하나 추가
-  const pathname = usePathname();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

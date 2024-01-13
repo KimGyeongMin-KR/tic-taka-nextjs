@@ -22,3 +22,13 @@ animation: bounceAnimation 1s; /* bounceAnimation은 실제로 정의해야 합�
 .w-100{
     width: 550px;
 }
+
+.slick-prev:before, .slick-next:before {
+    font-family: 'slick';
+    font-size: 25px;
+    line-height: 1;
+    opacity: .75;
+    color: rgb(0, 0, 0);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}

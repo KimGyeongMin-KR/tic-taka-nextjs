@@ -5,67 +5,132 @@ import { useRouter } from 'next/navigation';
 import { FaRegEye, FaCheck, FaHeart, FaRegHeart, FaRegComment } from "react-icons/fa";
 import { LuVote } from "react-icons/lu";
 import { getAccessToken } from '../lib/actions/storage';
-import './style.css'
+
 import Image from 'next/image';
 import Slider from "@ant-design/react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import './style.css'
 
-function SimpleSlider({ images }: { images: ImageInfo[] }) {
-  var settings = {
-    dots: true,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1
-  };
-  const s3Url = "https://tiktakamedia.s3.ap-northeast-2.amazonaws.com/"
-  console.log(images, 'images', typeof(images))
+import { userState } from '../lib/atoms';
+import {
+  useRecoilState, useRecoilValue,
+} from 'recoil';
+
+
+function SampleNextArrow(props) {
+  const { className, style, onClick } = props;
   return (
-      // <Slider {...settings} className='w-11/12'>
-      // {images.map((option, index) => {
-      //   return (
-      //     <div key={index} className='w-full sm:w-1/3 md:w-1/3 lg:w-1/4 p-2'>
-      //     <div className='relative' style={{ paddingBottom: '100%', overflow: 'hidden' }}>
-      //       <div className="absolute inset-0 flex items-center justify-center">
-      //         <Image
-      //           className='rounded-md'
-      //           key={option.id}
-      //           src={`${s3Url}${option.url}`}
-      //           alt=''
-      //           layout="fill"
-      //           objectFit="cover"
-      //         />
-      //       </div>
-      //     </div>
-      //   </div>
-      //   )
-      // })}
-      // </Slider>
-      <div className='mb-5'>
-        <Slider {...settings} className='w-11/12'>
-        {images.map((option, index) => (
-          <div key={index} className='w-full sm:w-1/3 md:w-1/3 lg:w-1/4 p-2'>
-            <div className='relative' style={{ paddingTop: '100%', overflow: 'hidden' }}>
-              <Image 
-                key={option.id}
-                src={`${s3Url}${option.url}`}
-                alt=''
-                layout="fill"
-                objectFit="contain"
-                onError={(e) => {
-                }}
-              />
-            </div>
-          </div>
-        ))}
-      </Slider>
-      </div>
-      
-
-    
+    <div
+      className={className}
+      style={{ ...style}}
+      onClick={onClick}
+    />
   );
 }
+
+function SamplePrevArrow(props) {
+  const { className, style, onClick } = props;
+  console.log(className, style, onClick)
+  return (
+    <div
+      className={`${className}`}
+      style={{ ...style, marginLeft: '0.8rem'}}
+      onClick={onClick}
+    />
+  );
+}
+
+export function SimpleSlider({ images }: { images: ImageInfo[] }) {
+    var settings = {
+      dots: true,
+      infinite: false,
+      speed: 500,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      arrows: true,
+      nextArrow: <SampleNextArrow />,
+      prevArrow: <SamplePrevArrow />,
+    };
+    const s3Url = "https://tiktakamedia.s3.ap-northeast-2.amazonaws.com/"
+    return (
+        <div className='mb-5'>
+          <Slider {...settings} className='w-11/12 p-2'>
+          {images.map((option, index) => (
+            <div key={index} className='w-full sm:w-1/3 md:w-1/3 lg:w-1/4 p-2'>
+              <div className='relative' style={{ paddingTop: '100%', overflow: 'hidden' }}>
+                <Image 
+                  key={option.id}
+                  src={`${s3Url}${option.url}`}
+                  alt=''
+                  layout="fill"
+                  objectFit="contain"
+                  onError={(e) => {
+                  }}
+                />
+              </div>
+            </div>
+          ))}
+        </Slider>
+        </div>
+    );
+  }
+
+
+const PostOptionModal = ({ closeModal, postId } : {closeModal: any, postId: number}) => {
+  // Add your logic for editing and deleting post here
+  const [hidden, setHidden] = useState(false);
+  const { push } = useRouter();
+  
+  async function deletePost(id:number) {
+    const confirmed = window.confirm("정말 삭제하시겠습니까?");
+    if (!confirmed){
+      return
+    }
+    const tokensString = localStorage.getItem('TIKTAKA');
+      const tokens = tokensString ? JSON.parse(tokensString) : null
+      const accessToken = tokens ? tokens.access : null
+      // 요청 헤더 설정
+      const headers = new Headers();
+      headers.append('Content-Type', 'application/json');
+      if (accessToken){
+        headers.append('Authorization', `Bearer ${accessToken}`);
+        const apiUrl = `http://localhost:8000/post/${postId}/`  
+        const response = await fetch(apiUrl, {
+          method: 'DELETE',
+          headers: headers,
+        });
+        alert("삭제 성공")
+        setHidden(true)
+        window.location.reload();
+      }else{
+        alert("잘못된 접근")
+      }
+  }
+
+  return (
+    <div className={`${hidden && 'hidden'} fixed z-50 inset-0 bg-gray-900 bg-opacity-60 overflow-y-auto h-full w-full px-4 modal`}>
+      <div className="relative top-40  mx-auto shadow-xl rounded-md bg-white max-w-md">
+
+          <div className="flex justify-between items-center bg-gray-400 text-white text-xl rounded-t-md px-4 py-2">
+              <h3>Options</h3>
+              <button onClick={closeModal}>X</button>
+          </div>
+
+          <div className="h-24 p-4 flex justify-between items-center">
+            {/* <button className="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition" onClick={closeModal}>수정</button> */}
+            <button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition"  onClick={() => deletePost(postId)}>삭제</button>
+          </div>
+      </div>
+  </div>
+  );
+};
+
+  
+  
+  
+
+
 const FeedPost: React.FC<FeedPostProps> = ({
   id,
   author,
@@ -87,9 +152,10 @@ const FeedPost: React.FC<FeedPostProps> = ({
   const [expanded, setExpanded] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const { push } = useRouter();
+  const user = useRecoilValue(userState);
+  const [isModalOpen, setModalOpen] = useState(false);
   const truncatedContent = content.slice(0, 100);
   const shouldShowMoreButton = content.length > 100;
-
   function handlePostLike(){
     const token = getAccessToken()
     const accessToken = token.access
@@ -124,19 +190,26 @@ const FeedPost: React.FC<FeedPostProps> = ({
         
       })
   }
+  const openModal = () => {
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
-
     // 이벤트 리스너 등록
     window.addEventListener('resize', handleResize);
-
     // 컴포넌트가 언마운트될 때 이벤트 리스너 제거
     return () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
   const handleToggleContent = () => {
     setExpanded(!expanded);
   };
@@ -179,7 +252,6 @@ const FeedPost: React.FC<FeedPostProps> = ({
       })
       .then(data => {
         // 요청이 성공하면 여기에서 data를 처리
-        console.log('Vote result:', data);
         const options = data.results
         const totalCount = options ? options.reduce((sum: number, r: OptionResult) => sum + r.count, 0) : 0;
         const updatedData: VotedResult = {
@@ -216,6 +288,25 @@ const FeedPost: React.FC<FeedPostProps> = ({
 
   return (
     <div className={`${windowWidth > 800 ? 'w-100' : 'w-full'} mx-auto bg-white rounded-md shadow-md p-4 mb-4 mt-3`}>
+      {/* <div>여기에 우측 끝에 '...' 표시와 함께 누를 시에 글 수정, 삭제 버튼이 있는 모달을 아래에서 위로 띄워줘</div> */}
+      {/* Modal Trigger */}
+      {author.username === user.username &&
+        <div className="flex items-end justify-end">
+        <button onClick={openModal} className="text-gray-500 cursor-pointer">
+          ...
+        </button>
+      </div>
+      }
+      
+
+      {/* Modal Content */}
+      {isModalOpen && (
+        <PostOptionModal
+          closeModal={closeModal}
+          postId={id}
+          // Pass other necessary props to the modal component
+        />
+      )}
       <div className="flex items-center mb-4">
         <img src={author.profile_image} alt="Profile" className="w-8 h-8 rounded-full mr-2" />
         <p className="text-sm font-bold">{author.username}</p>
@@ -233,7 +324,6 @@ const FeedPost: React.FC<FeedPostProps> = ({
         
       )}
       </p>
-      
     </div>
       <div className="flex flex-col space-y-2 mb-4">
         {options.map((option, index) => {
@@ -340,30 +430,60 @@ export default FeedPost;
 const gradient_bg = 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500'
 
 
-// 프론트 
-//  포스트 틀 유효성 체커
-//  프리 사인 url이용 이미지 업로드
-//  이미지 슬라이더
-//  글 등록/수정/삭제  우측에 ... 표시하고 드롭다운 수정/삭제
-//  해시태그 링크
+// 프론트
+//  메인 로딩 스켈레톤
+//  글 등록 ㅇ/수정/삭제  우측에 ... 표시하고 드롭다운 수정/삭제
+//  최상단 해시태그 & 링크
 
 //  로그인/회원가입/(카카오톡)
 
-//  프로필
-//    내글
+// 프로필
+//  내 글 제목만(인스타 썸넬처럼)
+//  회원탈퇴
 
-//  히스토리
+//  히스토리 
+  // 상단에 좋아요|투표 나눠보기
 
-//  검색, 트렌드
-//  태그 순위
+//  검색
+  // 오늘 핫한 이슈들을 기본으로 깔아주고 제목 그림처럼 만들어서 보여주기 & 상단에 검색 바
+  //  디테일로 들어가기 혹은 연관있는 게시글 연달아 보여주기?
 
 //  댓글 창
-//    대댓
+  // 대댓
+    // 하나의 모달을 위 더 띄운다?
+    // 혹은 위로 덮어 씌우고 뒤로 가기?
 
 
 // 백엔드
+//  메인에는 내가 좋아하는 태그들 위주로 반환
+    // 1주일내로 -> 1달 -> 1년 (offset)
+    // 최근 -> 투표
+    // 봤던 것 제외
+    // 비로그인 트렌딩 쿼리
 //  내 댓글 우선 반환
-//  봤던 것 제외 쿼리
 //  퍼미션 적용
-//  비로그인 트렌딩 쿼리
 //  검색
+
+
+
+const CommentModal = ({ closeModal, windowWidth }) => {
+  // Add your logic for editing and deleting post here
+
+  return (
+    <div className="fixed z-50 inset-0 bg-gray-900 bg-opacity-60 overflow-y-auto h-full w-full px-4 modal">
+      <div className="absolute bottom-0 h-full mx-auto shadow-xl rounded-md bg-white max-w-md">
+
+          <div className="flex justify-between items-center bg-green-500 text-white text-xl rounded-t-md px-4 py-2">
+              <h3>Modal header</h3>
+              <button onClick={closeModal}>x</button>
+          </div>
+
+          <div className="h-96 overflow-y-scroll p-4">
+              <p>Scrollable modal body</p>
+              <p>Scrollable modal body</p>
+          </div>
+
+      </div>
+  </div>
+  );
+};

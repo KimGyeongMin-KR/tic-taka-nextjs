@@ -6,6 +6,7 @@ import {FeedPostProps, PostFetchResult} from '@/app/lib/types/post';
 import { getAccessToken, fetchAccessToken } from '../lib/actions/storage';
 
 
+
 export default function Page() {
   const [posts, setPosts] = useState<FeedPostProps[]>([]);
   // const [page, setPage] = useState<number>(1); // 현재 페이지
@@ -41,7 +42,6 @@ export default function Page() {
 
   const fetchData = async () => {
     fetchAccessToken()
-    console.log(nextUrl, 'nextUrlnextUrl')
     if(nextUrl === null){
       return null
     }
@@ -70,7 +70,9 @@ export default function Page() {
       console.error('Error fetching data:', error);
     }
   };
+
   return (
+    // 태그라인
     <div className="grid grid-cols-1 gap-4">
       {posts.map(post => (
         <FeedPost key={post.id} {...post} />

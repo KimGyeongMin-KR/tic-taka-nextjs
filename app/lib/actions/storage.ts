@@ -1,7 +1,7 @@
 export function getAccessToken() {
     const tokensString = localStorage.getItem('TIKTAKA');
     if (!tokensString){
-      fetchAccessToken();
+      fetchAccessToken(); // 나중에 사라질 라인
       const tokensString = localStorage.getItem('TIKTAKA');
       return tokensString
     }
