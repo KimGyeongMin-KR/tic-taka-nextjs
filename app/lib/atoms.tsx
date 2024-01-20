@@ -18,3 +18,7 @@ export const userState = atom({
     key: 'userState', // unique ID (with respect to other atoms/selectors)
     default: defaultUser, // default value (aka initial value)
   });
+  export const navHiddenState = atom({
+    key: 'navHiddenState',
+    default: false, // 초기값은 보이는 상태
+  });

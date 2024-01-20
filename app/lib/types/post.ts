@@ -36,13 +36,14 @@ export interface FeedPostProps {
     subject: string;
     content: string;
     options: Option[];
-    images: Image[];
+    images: ImageInfo[];
     like_count: number;
     voted_count: number;
     comment_count: number;
     watched_count: number;
     is_voted: boolean;
     is_liked: boolean;
+    windowSize: number;
   }
 
   export interface FeedTag {

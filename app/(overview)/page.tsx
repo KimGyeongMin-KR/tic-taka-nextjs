@@ -14,9 +14,22 @@ const tagUrl = "http://localhost:8000/post/tag";
 export default function Page() {
   const [posts, setPosts] = useState<FeedPostProps[]>([]);
   const [tags, setTags] = useState<FeedTag[]>([]);
+  const [windowSize, setWindowSize] = useState(window.innerWidth);
+
   // const [page, setPage] = useState<number>(1); // 현재 페이지
   const [nextUrl, setNextUrl] = useState<string | null>('http://localhost:8000/post/'); // 현재 페이지
 
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize(window.innerWidth);
+    };
+    // 이벤트 리스너 등록
+    window.addEventListener('resize', handleResize);
+    // 컴포넌트가 언마운트될 때 이벤트 리스너 제거
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
   useEffect(() => {
     // 초기 데이터 로딩
     fetchData()
@@ -112,7 +125,7 @@ export default function Page() {
 
 
       {posts.map(post => (
-        <FeedPost key={post.id} {...post} />
+        <FeedPost key={post.id} {...post} windowSize={windowSize} />
       ))}
     </div>
   );
@@ -120,7 +133,7 @@ export default function Page() {
 
 
 // components/SearchForm.js
-{/* <div className={`${windowWidth > 800 ? 'w-100' : 'w-full'} mx-auto bg-white rounded-md shadow-md p-4 mb-4 mt-3`}> */}
+{/* <div className={`${windowSize > 800 ? 'w-100' : 'w-full'} mx-auto bg-white rounded-md shadow-md p-4 mb-4 mt-3`}> */}
 const SearchForm = () => {
   const handleSubmit = () => {
     // e.preventDefault();

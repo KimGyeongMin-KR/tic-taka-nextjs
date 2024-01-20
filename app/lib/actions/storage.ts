@@ -17,8 +17,8 @@ export async function setAccessToken(tokens: Object){
 export async function fetchAccessToken() {
     const apiUrl = "http://localhost:8000/user/api/token/";
     const credentials = {
-      username: "admin1",
-      password: "rlarudals2@"
+      username: "admin",
+      password: "rlarudals1!"
     };
   
     try {

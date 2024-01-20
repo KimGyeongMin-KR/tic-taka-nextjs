@@ -60,8 +60,8 @@ export default function RootLayout({
       <RecoilRoot>
         <AppState />
         {children}
+        <Navbar />
       </RecoilRoot>
-      <Navbar />
       </body>
     </html>
   );

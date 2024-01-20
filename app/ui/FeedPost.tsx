@@ -143,14 +143,15 @@ const FeedPost: React.FC<FeedPostProps> = ({
   images,
   watched_count,
   is_voted,
-  is_liked
+  is_liked,
+  windowSize,
 }) => {
   const [votedResult, setResult] = useState<VotedResult>();
   const [isLiked, setIsLiked] = useState<boolean>(is_liked);
   const [isVoted, setIsVoted] = useState<boolean>(is_voted);
   const [likeCount, setLikeCount] = useState<number>(like_count);
   const [expanded, setExpanded] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  // const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const { push } = useRouter();
   const user = useRecoilValue(userState);
   const [isModalOpen, setModalOpen] = useState(false);
@@ -198,17 +199,17 @@ const FeedPost: React.FC<FeedPostProps> = ({
     setModalOpen(false);
   };
 
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-    // 이벤트 리스너 등록
-    window.addEventListener('resize', handleResize);
-    // 컴포넌트가 언마운트될 때 이벤트 리스너 제거
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     setWindowWidth(window.innerWidth);
+  //   };
+  //   // 이벤트 리스너 등록
+  //   window.addEventListener('resize', handleResize);
+  //   // 컴포넌트가 언마운트될 때 이벤트 리스너 제거
+  //   return () => {
+  //     window.removeEventListener('resize', handleResize);
+  //   };
+  // }, []);
 
   const handleToggleContent = () => {
     setExpanded(!expanded);
@@ -287,7 +288,8 @@ const FeedPost: React.FC<FeedPostProps> = ({
   }
 
   return (
-    <div className={`${windowWidth > 800 ? 'w-100' : 'w-full'} mx-auto bg-white rounded-md shadow-md p-4 mb-4 mt-3`}>
+    // <div className={`${windowWidth > 800 ? 'w-100' : 'w-full'} mx-auto bg-white rounded-md shadow-md p-4 mb-4 mt-3`}>
+    <div className={`${windowSize > 800 ? 'w-100' : 'w-full'} mx-auto bg-white rounded-md shadow-md p-4 mb-4 mt-3`}>
       {/* <div>여기에 우측 끝에 '...' 표시와 함께 누를 시에 글 수정, 삭제 버튼이 있는 모달을 아래에서 위로 띄워줘</div> */}
       {/* Modal Trigger */}
       {author.username === user.username &&
@@ -440,10 +442,7 @@ const gradient_bg = 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
 // 프로필
 //  내 글 제목만(인스타 썸넬처럼)
 //  회원탈퇴
-
-//  히스토리 
-  // 상단에 좋아요|투표 나눠보기
-
+ 
 //  검색
   // 오늘 핫한 이슈들을 기본으로 깔아주고 제목 그림처럼 만들어서 보여주기 & 상단에 검색 바
   //  디테일로 들어가기 혹은 연관있는 게시글 연달아 보여주기?
@@ -463,27 +462,3 @@ const gradient_bg = 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
 //  내 댓글 우선 반환
 //  퍼미션 적용
 //  검색
-
-
-
-const CommentModal = ({ closeModal, windowWidth }) => {
-  // Add your logic for editing and deleting post here
-
-  return (
-    <div className="fixed z-50 inset-0 bg-gray-900 bg-opacity-60 overflow-y-auto h-full w-full px-4 modal">
-      <div className="absolute bottom-0 h-full mx-auto shadow-xl rounded-md bg-white max-w-md">
-
-          <div className="flex justify-between items-center bg-green-500 text-white text-xl rounded-t-md px-4 py-2">
-              <h3>Modal header</h3>
-              <button onClick={closeModal}>x</button>
-          </div>
-
-          <div className="h-96 overflow-y-scroll p-4">
-              <p>Scrollable modal body</p>
-              <p>Scrollable modal body</p>
-          </div>
-
-      </div>
-  </div>
-  );
-};
