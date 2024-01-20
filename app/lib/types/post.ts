@@ -44,3 +44,7 @@ export interface FeedPostProps {
     is_voted: boolean;
     is_liked: boolean;
   }
+
+  export interface FeedTag {
+      name: string;
+    }

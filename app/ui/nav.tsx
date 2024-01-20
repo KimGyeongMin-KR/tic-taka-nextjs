@@ -8,13 +8,15 @@ import { GrHomeRounded } from "react-icons/gr";
 import { LuHistory } from "react-icons/lu";
 import { CgProfile } from "react-icons/cg"
 import { IoSearch } from "react-icons/io5";
+import { BsPatchCheck } from "react-icons/bs";
 
 import clsx from 'clsx';
 
 
 const links = [
   { name: "Home", href: '/', icon: GrHomeRounded, style: {fontSize: "1.4rem"}},
-  { name: "Search", href: '/trending', icon: IoSearch, style: {fontSize: "1.5rem"}},
+  // { name: "Search", href: '/trending', icon: IoSearch, style: {fontSize: "1.5rem"}},
+  { name: "Official", href: '/official', icon: BsPatchCheck, style: {fontSize: "1.5rem"}},
   { name: "Add", href: '/post', icon: FaRegSquarePlus, style: {fontSize: "1.4rem"}},
   { name: "History", href: '/feed/history', icon: LuHistory, style: {fontSize: "1.5rem"}},
   { name: "Profile", href: '/feed/you', icon: CgProfile, style: {fontSize: "1.4rem"}},
@@ -41,7 +43,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className={isLargeScreen ? "fixed left-0 bottom-0 h-full w-20 bg-gray-100 shadow-sm z-10" : `fixed bottom-0 w-full bg-gray-100 shadow-sm z-10`}>
+    <nav className={isLargeScreen ? "fixed left-0 bottom-0 h-full w-20 bg-gray-100 shadow-sm z-30" : `fixed bottom-0 w-full bg-gray-100 shadow-sm z-10`}>
       <ul className={isLargeScreen ? "flex flex-col justify-center items-center space-y-20" : "h-10 flex justify-center items-center space-x-10"}>
       {links.map((link, idx) => {
         const LinkIcon = link.icon;
