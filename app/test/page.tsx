@@ -17,40 +17,8 @@ const YourComponent = () => {
     <div>
       {/* 본문 컨텐츠 */}
       <button onClick={openCommentModal}>댓글 열기</button>
-        <div>tt</div>
-        <div>tt</div>
-        <div>tt</div>
-        <div>tt</div>
-        <div>tt</div>
-        <div>tt</div>
-        <div>tt</div>
-        <div>tt</div><div>tt</div>
-        <div>tt</div>
-        <div>tt</div>
-        <div>tt</div><div>tt</div>
-        <div>tt</div>
-        <div>tt</div>
-        <div>tt</div><div>tt</div>
-        <div>tt</div>
-        <div>tt</div>
-        <div>tt</div><div>tt</div>
-        <div>tt</div>
-        <div>tt</div>
-        <div>tt</div><div>tt</div>
-        <div>tt</div>
-        <div>tt</div>
-        <div>tt</div><div>tt</div>
-        <div>tt</div>
-        <div>tt</div>
-        <div>tt</div><div>tt</div>
-        <div>tt</div>
-        <div>tt</div>
-        <div>tt</div><div>tt</div>
-        <div>tt</div>
-        <div>tt</div>
-        <div>tt</div>
       {/* showCommentModal이 true일 때 CommentModal 렌더링 */}
-      {showCommentModal && <CommentModal onClose={closeCommentModal} />}
+      {showCommentModal && <CommentModal windowSize={800} postId={1} optionIds={[1,2,3]} onClose={closeCommentModal} />}
     </div>
   );
 };

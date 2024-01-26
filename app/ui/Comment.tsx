@@ -62,7 +62,29 @@ const CommentModal = ({ onClose, windowSize, postId, optionIds }: {
 
 export default CommentModal;
 
-
+const exampleComments = [
+    {
+      id: 1,
+      comment: 'This is the first comment.',
+      post_id: 123,
+      author: {
+        id: 101,
+        username: 'John Doe',
+        profilePicture: 'https://example.com/profile.jpg',
+      },
+      parent_id: null,
+      voted_option_id: 2,
+      like_count: 10,
+      hate_count: 2,
+      child_count: 3,
+      created_at: '2022-01-25 08:30:00',
+      updated_at: null,
+      like_hate_none: 1,
+      optionIds: [1, 2, 3],
+    },
+    // ... Add more comment objects similarly
+  ];
+  
 const CommentArea = ({ postId, optionIds }: { postId : number, optionIds: number[] }) => {
   const [loading, setLoading] = useState(false);
   const [comments, setComments] = useState<CommentProps[]>([]); // Initial comments
@@ -126,8 +148,11 @@ const CommentArea = ({ postId, optionIds }: { postId : number, optionIds: number
   };
   return (
     <div ref={containerRef} className='overflow-y-auto flex-1' onScroll={handleScroll}>
-      {comments.map((comment, index) => (
+      {/* {comments.map((comment, index) => (
           <Comment key={comment.id} {...comment} optionIds={optionIds}/>
+      ))} */}
+      {exampleComments.map((comment, index) => (
+          <Comment key={comment.id} {...comment}/>
       ))}
     </div>
     
@@ -136,18 +161,19 @@ const CommentArea = ({ postId, optionIds }: { postId : number, optionIds: number
 
 // CommentProps      />
 const Comment: React.FC<CommentProps> = ({
-  id,
-  author,
+  id,  // for children url
+  author, // img, name
   comment,
-  post_id,
-  parent_id,
-  voted_option_id,
+  post_id,  // for url
+  parent_id, // for reply
+  voted_option_id, 
   like_count,
   hate_count,
-  child_count,
+  child_count,  // for reply
   created_at,
   updated_at,
-  like_hate_none,
+  like_hate_none,  // for using user
+  optionIds,  // for show idx
 }) => {
   const [showReplies, setShowReplies] = useState(false);
   const user = useRecoilValue(userState);
@@ -158,49 +184,55 @@ const Comment: React.FC<CommentProps> = ({
   // console.log(formatter.format(dateObject)); // "Monday, March 7, 2023"
   const handleLoadReplies = () => {
     setShowReplies(true)
+    console.log(parent_id, 'parent_id')
     // Logic to load child comments when the button is clicked
     // You may want to fetch additional comments from the server
     // and update the UI with the new comments
   };
-
+  const getVotedOptionIndex = (votedOptionId: number | null, optionIds: number[]): number | null => {
+    if (votedOptionId !== null) {
+      const index = optionIds.indexOf(votedOptionId);
+      return index !== -1 ? index + 1 : null;
+    }
+    return null;
+  };
+  
+  // Example Usage
+  
+  const votedOptionIndex = getVotedOptionIndex(voted_option_id, optionIds);
   return (
-    <div className="comment">
-
-      <div className="flex items-center mb-4">
-        <img src={author.profile_image} alt="Profile" className="w-8 h-8 rounded-full mr-2" />
-        <p className="text-sm font-bold">{author.username}</p>
-      </div>
-      {author.username === user.username &&
-        <div className="flex items-end justify-end">
-          hi
-        {/* <button onClick={openModal} className="text-gray-500 cursor-pointer">
-          ...
-        </button> */}
-      </div>
-      }
-      <div>
-
-        <p>Created at: {created_at}</p>
-
-        {updated_at && <p>(수정됨)</p>}
+    <div className="mb-4">
+      {/* Author Info */}
+      <div className="flex items-center mb-2">
+        <img src={author.profile_image} alt="Author" className="w-8 h-8 rounded-full mr-2" />
+        { votedOptionIndex && 
+            <span>{votedOptionIndex} 투표</span>
+        }
+        <span className="font-bold">{author.username}</span>
+        <span className="text-gray-500 ml-2">{created_at} {updated_at ? '(수정됨)' : ''}</span>
       </div>
 
-      {/* Comment content */}
-      <p>{comment}</p>
+      {/* Comment Content */}
+      <p className="text-gray-700">{comment}</p>
 
-
-      {/* Child comments */}
-      {child_count && child_count > 0 && (
-        <button onClick={handleLoadReplies} className='text-blue-500'>
-          {!parent_id && showReplies ? 'Hide Replies' : `Load ${child_count} Replies`}
+      {/* 카운트 0아닐 때만 보여주기 */}
+      <div className="flex mt-2">
+        <button className="text-blue-500 mr-4">
+          {like_hate_none === 1 ? '좋아요 색있는 버튼' : '좋아요'} ({like_count})
         </button>
-      )}
+        <button className="text-red-500 mr-4">
+          {like_hate_none === -1 ? '싫어요 취소' : '싫어요'} ({hate_count})
+        </button>
+        <button onClick={handleLoadReplies} className="text-gray-500">
+          {showReplies ? '답글 감추기' : `답글 보기 (${child_count || 0})`}
+        </button>
+      </div>
 
+      {/* Replies Section */}
       {showReplies && (
-        <div className='pl-3'>
-          ppp
-          {/* Logic to render and display child comments goes here */}
-          {/* You may recursively render child comments using the same Comment component */}
+        <div className="ml-4 border-l-2 pl-2">
+          {/* Display replies here */}
+          {/* You can map through replies and render each reply similarly */}
         </div>
       )}
     </div>

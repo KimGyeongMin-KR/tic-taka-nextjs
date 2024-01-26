@@ -32,7 +32,6 @@ const Navbar = () => {
 
   useEffect(() => {
     const checkScreenWidth = () => {
-      console.log('check')
       setIsLargeScreen(window.innerWidth >= 800);
     };
 
@@ -56,7 +55,6 @@ useEffect(() => {
     // Compare current scroll position with previous scroll position
     if (currentScrollY > prevScrollY.current) {
       // Scrolling down
-      console.log(isLargeScreen, 'isLargeScreen')
       if(!isLargeScreen){
         setNavHidden(true);
       }
