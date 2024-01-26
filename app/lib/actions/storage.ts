@@ -1,9 +1,7 @@
 export function getAccessToken() {
     const tokensString = localStorage.getItem('TIKTAKA');
     if (!tokensString){
-      fetchAccessToken(); // 나중에 사라질 라인
-      const tokensString = localStorage.getItem('TIKTAKA');
-      return tokensString
+      return null
     }
     return JSON.parse(tokensString)
 }
@@ -17,8 +15,8 @@ export async function setAccessToken(tokens: Object){
 export async function fetchAccessToken() {
     const apiUrl = "http://localhost:8000/user/api/token/";
     const credentials = {
-      username: "admin",
-      password: "rlarudals1!"
+      username: "admin1",
+      password: "rlarudals2@"
     };
   
     try {

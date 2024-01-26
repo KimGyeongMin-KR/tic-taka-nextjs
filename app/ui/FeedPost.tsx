@@ -1,21 +1,21 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import {OptionResult, VotedResult, FeedPostProps, ImageInfo} from "@/app/lib/types/post"
 import { useRouter } from 'next/navigation';
 import { FaRegEye, FaCheck, FaHeart, FaRegHeart, FaRegComment } from "react-icons/fa";
 import { LuVote } from "react-icons/lu";
-import { getAccessToken } from '../lib/actions/storage';
-
+import {
+  useRecoilState, useRecoilValue,
+} from 'recoil';
 import Image from 'next/image';
 import Slider from "@ant-design/react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import './style.css'
 
+import {OptionResult, VotedResult, FeedPostProps, ImageInfo} from "@/app/lib/types/post"
+import { getAccessToken } from '../lib/actions/storage';
 import { userState } from '../lib/atoms';
-import {
-  useRecoilState, useRecoilValue,
-} from 'recoil';
+import CommentModal from './Comment';
 
 
 function SampleNextArrow(props) {
@@ -151,12 +151,17 @@ const FeedPost: React.FC<FeedPostProps> = ({
   const [isVoted, setIsVoted] = useState<boolean>(is_voted);
   const [likeCount, setLikeCount] = useState<number>(like_count);
   const [expanded, setExpanded] = useState(false);
+  const [showCommentModal, setShowCommentModal] = useState(false);
+  const optionIds = options.map(function(option){
+    return option.id
+  })
   // const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const { push } = useRouter();
   const user = useRecoilValue(userState);
   const [isModalOpen, setModalOpen] = useState(false);
   const truncatedContent = content.slice(0, 100);
   const shouldShowMoreButton = content.length > 100;
+
   function handlePostLike(){
     const token = getAccessToken()
     const accessToken = token.access
@@ -191,6 +196,16 @@ const FeedPost: React.FC<FeedPostProps> = ({
         
       })
   }
+
+
+  const openCommentModal = () => {
+    setShowCommentModal(true);
+  };
+
+  const closeCommentModal = () => {
+    setShowCommentModal(false);
+  };
+  
   const openModal = () => {
     setModalOpen(true);
   };
@@ -409,6 +424,8 @@ const FeedPost: React.FC<FeedPostProps> = ({
         </div>
 
       </div>
+      {showCommentModal && <CommentModal onClose={closeCommentModal} windowSize={windowSize} postId={id} optionIds={optionIds}/>}
+
       <div className="mt-4 flex items-center space-x-4">
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-1 text-gray-500">
@@ -418,8 +435,12 @@ const FeedPost: React.FC<FeedPostProps> = ({
             <span>{likeCount}</span>
           </div>
           <div className="flex items-center space-x-1 text-gray-500">
-            <FaRegComment className='text-2xl'/>
+            <button onClick={() => openCommentModal()}>
+              <FaRegComment className='text-2xl'/>
+            </button>
+
             <span>{comment_count}</span>
+
           </div>
         </div>
       </div>

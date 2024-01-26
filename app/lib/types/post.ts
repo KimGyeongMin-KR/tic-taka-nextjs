@@ -24,11 +24,6 @@ export  interface VotedResult {
     timestamp: Date;
     reRequest: number;
   }
-  
-export interface PostFetchResult {
-  results: FeedPostProps[];
-  next: string;
-}
 
 export interface FeedPostProps {
     id: number;
@@ -46,6 +41,23 @@ export interface FeedPostProps {
     windowSize: number;
   }
 
-  export interface FeedTag {
-      name: string;
-    }
+export interface FeedTag {
+    name: string;
+}
+
+
+export interface CommentProps {
+  id: number;
+  comment: string;
+  post_id: number;
+  author: Author;
+  parent_id: number|null;
+  voted_option_id: number|null;
+  like_count: number;
+  hate_count: number;
+  child_count: number|null;
+  created_at: string;
+  updated_at: string|null;
+  like_hate_none: number;
+  optionIds: number[];
+}

@@ -3,10 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import FeedPost from '../ui/FeedPost';
 import {FeedPostProps, FeedTag} from '@/app/lib/types/post';
-import { getAccessToken, fetchAccessToken } from '../lib/actions/storage';
+// import { getAccessToken, fetchAccessToken } from '../lib/actions/storage';
 import { IoSearch } from "react-icons/io5";
 import { HiCursorClick } from "react-icons/hi";
 import Link from 'next/link';
+import { getAccessToken } from '../lib/\bjwt';
 
 
 const tagUrl = "http://localhost:8000/post/tag";
@@ -14,11 +15,11 @@ const tagUrl = "http://localhost:8000/post/tag";
 export default function Page() {
   const [posts, setPosts] = useState<FeedPostProps[]>([]);
   const [tags, setTags] = useState<FeedTag[]>([]);
-  const [windowSize, setWindowSize] = useState(window.innerWidth);
-
+  const [windowSize, setWindowSize] = useState((typeof window !== 'undefined' ? window.innerWidth : 0));
+  
   // const [page, setPage] = useState<number>(1); // 현재 페이지
   const [nextUrl, setNextUrl] = useState<string | null>('http://localhost:8000/post/'); // 현재 페이지
-
+  
   useEffect(() => {
     const handleResize = () => {
       setWindowSize(window.innerWidth);
@@ -69,37 +70,37 @@ export default function Page() {
       fetchData();
     }
   }
-  
 
   const fetchData = async () => {
-    fetchAccessToken()
     if(nextUrl === null){
       return null
     }
-    try {
-      const tokensString = localStorage.getItem('TIKTAKA');
-      const tokens = tokensString ? JSON.parse(tokensString) : null
-      const accessToken = tokens ? tokens.access : null
-      // 요청 헤더 설정
-      const headers = new Headers();
-      headers.append('Content-Type', 'application/json');
-      if (accessToken){
-        headers.append('Authorization', `Bearer ${accessToken}`);
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+
+    const accessToken = await getAccessToken()
+    if(accessToken === false){
+      const isConfirm = confirm("로그인이 만료 됐습니다. 로그인 화면으로 가시겠습니까?")
+      if(isConfirm){
+        window.location.href = '/signin';
+        return
+      }else{
+        localStorage.removeItem("TIKTAKA")
       }
-      // fetch 함수를 사용하여 데이터 가져오기
-      // console.log(nextUrl, nextUrl)
-      const response = await fetch(nextUrl, {method: "GET", headers: headers});
-      
-      // JSON으로 변환
-      const data = await response.json();
-      const postData = data.results;
-      const next = data.next;
-      setNextUrl(next)
-      console.log(nextUrl, next, data.next, 'datadata')
-      setPosts((prevPosts) => [...prevPosts, ...postData]);
-    } catch (error) {
-      console.error('Error fetching data:', error);
     }
+    if (accessToken){
+      headers.append('Authorization', `Bearer ${accessToken}`);
+    }
+    const response = await fetch(nextUrl, {method: "GET", headers: headers});
+    if(!response.ok){
+      return
+    }
+    // JSON으로 변환
+    const data = await response.json();
+    const postData = data.results;
+    const next = data.next;
+    setNextUrl(next)
+    setPosts((prevPosts) => [...prevPosts, ...postData]);
   };
 
   return (

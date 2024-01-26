@@ -32,10 +32,11 @@ function AppState(){
       if (!token) { return; }
       const base64Url = token.split('.')[1];
       const base64 = base64Url.replace('-', '+').replace('_', '/');
-      return JSON.parse(window.atob(base64));
+      return JSON.parse(atob(base64));
     }
     if (accessToken){
       const userState = parseJwt(accessToken);
+      console.log(userState, 'usersss', Math.floor(Date.now() / 1000) - 1705824154);
       setUserState({
         user_id: userState.user_id,
         username: userState.username
