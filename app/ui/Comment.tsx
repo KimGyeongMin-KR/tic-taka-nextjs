@@ -7,7 +7,11 @@ import { getAccessToken } from '../lib/\bjwt';
 import {
   useRecoilState, useRecoilValue,
 } from 'recoil';
-import { userState } from '../lib/atoms';
+import { userState, replyState, defaultReplyInfo } from '../lib/atoms';
+import { FaRegThumbsUp, FaRegThumbsDown } from "react-icons/fa6";
+import { BiMessageCheck } from "react-icons/bi";
+import { MdOutlineComment } from "react-icons/md";
+import clsx from 'clsx';
 
 const CommentModal = ({ onClose, windowSize, postId, optionIds }: {
   onClose: any,
@@ -17,16 +21,29 @@ const CommentModal = ({ onClose, windowSize, postId, optionIds }: {
 }) => {
   const [navHidden, setNavHidden] = useRecoilState(navHiddenState); // Recoil 상태 사용
   const [showReplies, setShowReplies] = useState([]); // Track which comment's replies are visible
-  
+  const [reply, setReply] = useRecoilState(replyState);
+  const inputRef = useRef(null);
+
   useEffect(() => {
     setNavHidden(true);
     document.body.style.overflow = 'hidden';
     return () => {
       setNavHidden(false);
+      setReply(defaultReplyInfo);
       document.body.style.overflow = 'visible';
     };
   }, []); // Empty dependency array ensures that the effect runs only once
   
+  useEffect(() => {
+    if (reply.id) {
+      inputRef.current && inputRef.current.focus();
+    }
+  }, [reply.id]);
+
+  const cancleReply = () => {
+    setReply(defaultReplyInfo);
+  };
+
   const closeModal = () => {
     onClose();
   };
@@ -51,9 +68,29 @@ const CommentModal = ({ onClose, windowSize, postId, optionIds }: {
         {/* </div> */}
 
         {/* Comment input at the bottom */}
-        <div className="mt-4">
-          <input type="text" required placeholder="댓글을 입력하세요" className="w-full border p-2" />
-          <button onClick={commentSubmit} className="mt-2 bg-blue-500 text-white p-2 rounded">댓글 작성</button>
+        <div>
+            <div className="bg-gray-100 rounded flex items-center">
+                {reply.id &&
+                 <>
+                 {reply.authorName}님에게의 답글..
+                 <button className='text-rose-500' onClick={cancleReply}>(X)</button>
+                 </>
+                }
+                
+            </div>
+            <div className='flex items-center'>
+                <input
+                ref={inputRef}
+                type="text"
+                required
+                placeholder="댓글을 입력하세요"
+                className="w-full border"
+                />
+                <button onClick={commentSubmit} className="bg-amber-500 text-white p-2 rounded">
+                <BiMessageCheck/>
+                </button>
+            </div>
+          
         </div>
       </div>
     </div>
@@ -69,21 +106,232 @@ const exampleComments = [
       post_id: 123,
       author: {
         id: 101,
-        username: 'John Doe',
+        username: 'John Doe1',
         profilePicture: 'https://example.com/profile.jpg',
       },
       parent_id: null,
       voted_option_id: 2,
       like_count: 10,
-      hate_count: 2,
+      hate_count: 0,
       child_count: 3,
       created_at: '2022-01-25 08:30:00',
       updated_at: null,
       like_hate_none: 1,
       optionIds: [1, 2, 3],
     },
-    // ... Add more comment objects similarly
+    {
+        id: 2,
+        comment: 'This is the first comment.',
+        post_id: 123,
+        author: {
+          id: 101,
+          username: 'John Doe',
+          profilePicture: 'https://example.com/profile.jpg',
+        },
+        parent_id: null,
+        voted_option_id: 2,
+        like_count: 10,
+        hate_count: 2,
+        child_count: 3,
+        created_at: '2022-01-25 08:30:00',
+        updated_at: null,
+        like_hate_none: 1,
+        optionIds: [1, 2, 3],
+      },
+      {
+        id: 3,
+        comment: 'This is the first comment.',
+        post_id: 123,
+        author: {
+          id: 101,
+          username: 'John Doe3',
+          profilePicture: 'https://example.com/profile.jpg',
+        },
+        parent_id: null,
+        voted_option_id: 2,
+        like_count: 10,
+        hate_count: 2,
+        child_count: 3,
+        created_at: '2022-01-25 08:30:00',
+        updated_at: null,
+        like_hate_none: 1,
+        optionIds: [1, 2, 3],
+      },
+      {
+        id: 4,
+        comment: 'This is the first comment.',
+        post_id: 123,
+        author: {
+          id: 101,
+          username: 'John Doe',
+          profilePicture: 'https://example.com/profile.jpg',
+        },
+        parent_id: null,
+        voted_option_id: 2,
+        like_count: 10,
+        hate_count: 2,
+        child_count: 3,
+        created_at: '2022-01-25 08:30:00',
+        updated_at: null,
+        like_hate_none: 1,
+        optionIds: [1, 2, 3],
+      },
+      {
+        id: 5,
+        comment: 'This is the first comment.',
+        post_id: 123,
+        author: {
+          id: 101,
+          username: 'John Doe',
+          profilePicture: 'https://example.com/profile.jpg',
+        },
+        parent_id: null,
+        voted_option_id: 2,
+        like_count: 10,
+        hate_count: 2,
+        child_count: 3,
+        created_at: '2022-01-25 08:30:00',
+        updated_at: null,
+        like_hate_none: 1,
+        optionIds: [1, 2, 3],
+      },
+      {
+        id: 6,
+        comment: 'This is the first comment.',
+        post_id: 123,
+        author: {
+          id: 101,
+          username: 'John Doe',
+          profilePicture: 'https://example.com/profile.jpg',
+        },
+        parent_id: null,
+        voted_option_id: 2,
+        like_count: 10,
+        hate_count: 2,
+        child_count: 3,
+        created_at: '2022-01-25 08:30:00',
+        updated_at: null,
+        like_hate_none: 1,
+        optionIds: [1, 2, 3],
+      },
+      {
+        id: 7,
+        comment: 'This is the first comment.',
+        post_id: 123,
+        author: {
+          id: 101,
+          username: 'John Doe',
+          profilePicture: 'https://example.com/profile.jpg',
+        },
+        parent_id: null,
+        voted_option_id: 2,
+        like_count: 10,
+        hate_count: 2,
+        child_count: 3,
+        created_at: '2022-01-25 08:30:00',
+        updated_at: null,
+        like_hate_none: 1,
+        optionIds: [1, 2, 3],
+      },
+      {
+        id: 8,
+        comment: 'This is the first comment.',
+        post_id: 123,
+        author: {
+          id: 101,
+          username: 'John Doe',
+          profilePicture: 'https://example.com/profile.jpg',
+        },
+        parent_id: null,
+        voted_option_id: 2,
+        like_count: 10,
+        hate_count: 2,
+        child_count: 3,
+        created_at: '2022-01-25 08:30:00',
+        updated_at: null,
+        like_hate_none: 1,
+        optionIds: [1, 2, 3],
+      },
+      {
+        id: 9,
+        comment: 'This is the first comment.',
+        post_id: 123,
+        author: {
+          id: 101,
+          username: 'John Doe',
+          profilePicture: 'https://example.com/profile.jpg',
+        },
+        parent_id: null,
+        voted_option_id: 2,
+        like_count: 10,
+        hate_count: 2,
+        child_count: 3,
+        created_at: '2022-01-25 08:30:00',
+        updated_at: null,
+        like_hate_none: 1,
+        optionIds: [1, 2, 3],
+      },
   ];
+
+const exampleReplys = [
+    {
+        id: 10,
+        comment: 'This is the first comment.',
+        post_id: 123,
+        author: {
+          id: 101,
+          username: 'John Doe3',
+          profilePicture: 'https://example.com/profile.jpg',
+        },
+        parent_id: 3,
+        voted_option_id: 2,
+        like_count: 10,
+        hate_count: 2,
+        child_count: 3,
+        created_at: '2022-01-25 08:30:00',
+        updated_at: null,
+        like_hate_none: 1,
+        optionIds: [1, 2, 3],
+      },
+      {
+        id: 10,
+        comment: 'This is the first comment.',
+        post_id: 123,
+        author: {
+          id: 101,
+          username: 'John Doe3',
+          profilePicture: 'https://example.com/profile.jpg',
+        },
+        parent_id: 3,
+        voted_option_id: 2,
+        like_count: 10,
+        hate_count: 2,
+        child_count: 3,
+        created_at: '2022-01-25 08:30:00',
+        updated_at: null,
+        like_hate_none: 1,
+        optionIds: [1, 2, 3],
+      },
+      {
+        id: 10,
+        comment: 'This is the first comment.',
+        post_id: 123,
+        author: {
+          id: 101,
+          username: 'John Doe3',
+          profilePicture: 'https://example.com/profile.jpg',
+        },
+        parent_id: 3,
+        voted_option_id: 2,
+        like_count: 10,
+        hate_count: 2,
+        child_count: 3,
+        created_at: '2022-01-25 08:30:00',
+        updated_at: null,
+        like_hate_none: 1,
+        optionIds: [1, 2, 3],
+      },
+]
   
 const CommentArea = ({ postId, optionIds }: { postId : number, optionIds: number[] }) => {
   const [loading, setLoading] = useState(false);
@@ -159,7 +407,16 @@ const CommentArea = ({ postId, optionIds }: { postId : number, optionIds: number
   )
 }
 
-// CommentProps      />
+const CommentReplies: React.FC<{ replies: CommentProps[] }> = ({ replies }) => {
+    return (
+      <div className="ml-6">
+        {replies.map((reply, index) => (
+          <Comment key={reply.id} {...reply} />
+        ))}
+      </div>
+    );
+  };
+
 const Comment: React.FC<CommentProps> = ({
   id,  // for children url
   author, // img, name
@@ -176,19 +433,27 @@ const Comment: React.FC<CommentProps> = ({
   optionIds,  // for show idx
 }) => {
   const [showReplies, setShowReplies] = useState(false);
+  const [commentReacted, setCommentReact] = useState(like_hate_none);
+  const [reply, setReply] = useRecoilState(replyState);
   const user = useRecoilValue(userState);
-  const dateObject = new Date(created_at);
   
-  // const option = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  // const formatter = new Intl.DateTimeFormat('ko', option);
-  // console.log(formatter.format(dateObject)); // "Monday, March 7, 2023"
-  const handleLoadReplies = () => {
-    setShowReplies(true)
-    console.log(parent_id, 'parent_id')
-    // Logic to load child comments when the button is clicked
-    // You may want to fetch additional comments from the server
-    // and update the UI with the new comments
+  const [replys, setReplys] = useState<CommentProps[]>(exampleReplys);
+  const [nextUrl, setNextUrl] = useState<string|null>(`http://localhost:8000/post/${post_id}/comment/${id}/replies`);
+    // 숨겨져있으면 child카운트, 아니라면 childcount에서 현재 길이 빼기
+  const handleLoadReplies = async () => {
+    if(nextUrl === null){
+        return
+    }
+    const response = await fetch(nextUrl);
+    if (response.ok) {
+      const data = await response.json();
+      // 가져온 답글로 상태를 업데이트합니다
+      setShowReplies(true);
+    }
   };
+  const hideReplys = () => {
+    setShowReplies(false)
+  }
   const getVotedOptionIndex = (votedOptionId: number | null, optionIds: number[]): number | null => {
     if (votedOptionId !== null) {
       const index = optionIds.indexOf(votedOptionId);
@@ -197,43 +462,132 @@ const Comment: React.FC<CommentProps> = ({
     return null;
   };
   
-  // Example Usage
+  const commentLike = async () => {
+    const accessToken = await getAccessToken()
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    if(!accessToken){
+        window.location.href = '/signin';
+    }else{
+        headers.append('Authorization', `Bearer ${accessToken}`);
+    }
+    const body = {like_hate_none: 0}
+    if(commentReacted !== 1){
+        body.like_hate_none = 1
+    }
+    const response = await fetch(`http://localhost:8000/post/${post_id}/comment/${id}/like`, {method: "POST", headers: headers});
+    if(!response.ok){
+      return
+    }
+    const data = await response.json();
+    setCommentReact(data.like_hate_none)
+  };
+
+  const commentHate = async () => {
+    const accessToken = await getAccessToken()
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    if(!accessToken){
+        window.location.href = '/signin';
+    }else{
+        headers.append('Authorization', `Bearer ${accessToken}`);
+    }
+    const body = {like_hate_none: 0}
+    if(commentReacted !== -1){
+        body.like_hate_none = -1
+    }
+    const response = await fetch(`http://localhost:8000/post/${post_id}/comment/${id}/like`, {method: "POST", headers: headers});
+    if(!response.ok){
+      return
+    }
+    const data = await response.json();
+    setCommentReact(data.like_hate_none)
+  };
+  const turnOnReply = () =>{
+    const targetId = parent_id !== null ? parent_id : id;
+    const targetComment = {
+        id: targetId,
+        comment: comment,
+        authorName: author.username
+    }
+    setReply(targetComment);
+  }
   
   const votedOptionIndex = getVotedOptionIndex(voted_option_id, optionIds);
   return (
-    <div className="mb-4">
+    <div className="mb-2">
       {/* Author Info */}
       <div className="flex items-center mb-2">
         <img src={author.profile_image} alt="Author" className="w-8 h-8 rounded-full mr-2" />
-        { votedOptionIndex && 
-            <span>{votedOptionIndex} 투표</span>
-        }
         <span className="font-bold">{author.username}</span>
+        { votedOptionIndex && 
+            <span className='ml-1'>({votedOptionIndex}번 투표자)</span>
+        }
         <span className="text-gray-500 ml-2">{created_at} {updated_at ? '(수정됨)' : ''}</span>
       </div>
 
       {/* Comment Content */}
+      {/* 자세히와 요약 추가 */}
       <p className="text-gray-700">{comment}</p>
 
-      {/* 카운트 0아닐 때만 보여주기 */}
       <div className="flex mt-2">
-        <button className="text-blue-500 mr-4">
-          {like_hate_none === 1 ? '좋아요 색있는 버튼' : '좋아요'} ({like_count})
-        </button>
-        <button className="text-red-500 mr-4">
-          {like_hate_none === -1 ? '싫어요 취소' : '싫어요'} ({hate_count})
-        </button>
-        <button onClick={handleLoadReplies} className="text-gray-500">
-          {showReplies ? '답글 감추기' : `답글 보기 (${child_count || 0})`}
-        </button>
+        <div className='mr-4'>
+            <button onClick={commentLike}>
+                <FaRegThumbsUp 
+                className={clsx(
+                    {
+                    'text-green-400': (commentReacted === 1),
+                    'text-gray-400': (commentReacted !== 1),
+                    },
+                )}
+                />
+            </button>
+            <span> {like_count !== 0 && (like_count)}</span>
+        </div>
+        <div className='mr-4'>
+            <button className="text-red-500" onClick={commentHate}>
+            <FaRegThumbsDown
+                className={clsx(
+                    {
+                    'text-red-400': (commentReacted === -1),
+                    'text-gray-400': (commentReacted !== -1),
+                    },
+                )}
+                />
+            </button>
+            <span> {hate_count !== 0 && (hate_count)}</span>
+        </div>
+        <div>
+            <button onClick={turnOnReply}>
+                <MdOutlineComment
+                    className={clsx(
+                        {
+                        'text-black-800': (reply.id === id),
+                        'text-gray-400': (reply.id !== id),
+                        },
+                    )}
+                />
+            </button>
+        </div>
       </div>
+        {
+            child_count && ( child_count - replys.length ) > 0 &&
+            <div className='ml-4'>
+                <button onClick={handleLoadReplies} className="text-blue-500">
+                    답글 보기({child_count - replys.length})
+                </button>
+            </div>
+            
+        }
+          {showReplies &&
+        <button onClick={hideReplys} className="text-gray-500">
+          답글 감추기
+        </button>
+        }
 
       {/* Replies Section */}
-      {showReplies && (
-        <div className="ml-4 border-l-2 pl-2">
-          {/* Display replies here */}
-          {/* You can map through replies and render each reply similarly */}
-        </div>
+      {replys && parent_id === null && (
+          <CommentReplies replies={replys}/>
       )}
     </div>
   );
