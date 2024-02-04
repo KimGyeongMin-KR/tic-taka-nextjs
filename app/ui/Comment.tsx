@@ -23,7 +23,7 @@ const CommentModal = ({ onClose, windowSize, postId, optionIds }: {
 }) => {
   const [navHidden, setNavHidden] = useRecoilState(navHiddenState); // Recoil 상태 사용
   const [reply, setReply] = useRecoilState(replyState);
-  const inputRef = useRef(null);
+  const inputRef: any = useRef(null);
   const { push } = useRouter();
   
   const [loading, setLoading] = useState(false);
