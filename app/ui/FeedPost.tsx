@@ -56,7 +56,7 @@ export function SimpleSlider({ images }: { images: ImageInfo[] }) {
     return (
         <div className='mb-5 w-11/12 p-2'>
           {/*  className='w-11/12 p-2' */}
-          
+
           <Slider {...settings}> 
           {images.map((option, index) => (
             <div key={index} className='w-full sm:w-1/3 md:w-1/3 lg:w-1/4 p-2'>
@@ -97,7 +97,7 @@ const PostOptionModal = ({ closeModal, postId } : {closeModal: any, postId: numb
       headers.append('Content-Type', 'application/json');
       if (accessToken){
         headers.append('Authorization', `Bearer ${accessToken}`);
-        const apiUrl = `http://localhost:8000/post/${postId}/`  
+        const apiUrl = `http://server.tiikiik.com/post/${postId}/`  
         const response = await fetch(apiUrl, {
           method: 'DELETE',
           headers: headers,

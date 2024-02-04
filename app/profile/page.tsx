@@ -18,7 +18,7 @@ const ProfilePage = () => {
   const [windowSize, setWindowSize] = useState((typeof window !== 'undefined' ? window.innerWidth : 0));
   
   // const [page, setPage] = useState<number>(1); // 현재 페이지
-  const [nextUrl, setNextUrl] = useState<string | null>('http://localhost:8000/post/?type=profile');
+  const [nextUrl, setNextUrl] = useState<string | null>('http://server.tiikiik.com/post/?type=profile');
   
   useEffect(() => {
     fetchData();
