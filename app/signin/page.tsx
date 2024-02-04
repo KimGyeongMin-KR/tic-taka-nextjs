@@ -1,35 +1,72 @@
 'use client'
 
-// Login.js
-
-import React, { useState } from 'react';
+import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-const Login = () => {
-  const [loginData, setLoginData] = useState({
+interface LoginData {
+  username: string;
+  password: string;
+}
+
+const Login: React.FC = () => {
+  const [loginData, setLoginData] = useState<LoginData>({
     username: '',
     password: '',
   });
-  const [rememberMe, setRememberMe] = useState(false);
+  const [rememberUsername, setRememberUsername] = useState(false);
+  const { push } = useRouter();
 
-  const handleChange = (e) => {
+  useEffect(() => {
+    const rememberedUsername = localStorage.getItem('rememberedUsername');
+    if (rememberedUsername) {
+      setLoginData((prevData) => ({ ...prevData, username: rememberedUsername }));
+      setRememberUsername(true);
+    }
+  }, []);
+
+
+  const handleRememberUsernameChange = () => {
+    setRememberUsername((prevValue) => !prevValue);
+  };
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setLoginData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleRememberMeChange = (e) => {
-    setRememberMe(e.target.checked);
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // 로그인 로직 추가
     console.log('로그인 성공!', loginData);
-    if (rememberMe) {
-      // 아이디 기억하기가 체크되었을 때의 처리
-      console.log('아이디 기억하기 활성화');
-      // 로컬 스토리지 또는 쿠키 등을 사용하여 아이디를 저장할 수 있습니다.
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+
+    const response = await fetch(
+      'http://localhost:8000/user/api/token/',
+      {method: "POST", headers: headers, body: JSON.stringify({
+        username: loginData.username,
+        password: loginData.password
+      })}
+    );
+    if(!response.ok){
+      alert("아이디, 비밀번호를 확인하세요")
+      return false
     }
+    const data = await response.json();
+    const userInfo = localStorage.getItem('TIKTAKA');
+    if (userInfo){
+      localStorage.removeItem('TIKTAKA')
+    }
+    localStorage.setItem('TIKTAKA', JSON.stringify(data));
+
+    if (rememberUsername) {
+      localStorage.setItem('rememberedUsername', loginData.username);
+    } else {
+      // 기억하지 않을 경우 로컬 스토리지에서 제거
+      localStorage.removeItem('rememberedUsername');
+    }
+    push('/');
   };
 
   return (
@@ -76,8 +113,8 @@ const Login = () => {
               name="remember-me"
               type="checkbox"
               className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-              checked={rememberMe}
-              onChange={handleRememberMeChange}
+              checked={rememberUsername}
+              onChange={handleRememberUsernameChange}
             />
             <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
               아이디 기억하기
@@ -85,20 +122,17 @@ const Login = () => {
           </div>
 
           <div>
-
-
-        <Link
-              key={'link.name'}
-              href={'/signup'}
-            >
-              아이디가 없으신가요
-            </Link>
             <button
               type="submit"
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               로그인
             </button>
+          </div>
+          <div className='flex'>
+            <Link href='/signup' className='ml-auto'>
+              아이디가 없으신가요
+            </Link>
           </div>
         </form>
       </div>

@@ -1,14 +1,11 @@
 "use client"
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import FeedPost from '../ui/FeedPost';
 import {FeedPostProps, FeedTag} from '@/app/lib/types/post';
-// import { getAccessToken, fetchAccessToken } from '../lib/actions/storage';
 import { IoSearch } from "react-icons/io5";
 import { HiCursorClick } from "react-icons/hi";
-import Link from 'next/link';
 import { getAccessToken } from '../lib/\bjwt';
-
 
 const tagUrl = "http://localhost:8000/post/tag";
 
@@ -16,6 +13,7 @@ export default function Page() {
   const [posts, setPosts] = useState<FeedPostProps[]>([]);
   const [tags, setTags] = useState<FeedTag[]>([]);
   const [windowSize, setWindowSize] = useState((typeof window !== 'undefined' ? window.innerWidth : 0));
+  const [searchQuery, setSearchQuery] = useState<string|null>('');
   
   // const [page, setPage] = useState<number>(1); // 현재 페이지
   const [nextUrl, setNextUrl] = useState<string | null>('http://localhost:8000/post/'); // 현재 페이지
@@ -31,6 +29,18 @@ export default function Page() {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
+  const handleSearch = (searchQuery: string) => {
+    const newNextUrl = `http://localhost:8000/post/?search=${searchQuery}`;
+    setNextUrl(newNextUrl);
+    setPosts([]);
+    setSearchQuery(searchQuery);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [searchQuery]);
+
   useEffect(() => {
     // 초기 데이터 로딩
     fetchData()
@@ -106,51 +116,51 @@ export default function Page() {
   return (
     // 태그라인
     <div className="grid grid-cols-1 gap-4">
-      <SearchForm />
+      <SearchForm onSearch={handleSearch}/>
       {/* 태그들 */}
       {tags && (
-        <div className="mt-10 w-full p-4">
-          <div className='mx-auto max-w-screen-xl flex justify-center items-center space-x-10'>
-            {tags.map((tag) => (
-              
-              <div key={tag.name} className="px-2 py-1 mx-2 bg-gray-200 rounded-md">
-                <Link href={`?search=${tag.name}`}>
-                #{tag.name}
-                </Link>
-              </div>
-            ))}
-          </div>
-          
+        <div className="mt-10 w-full p-4 border-b border-gray-300 overflow-y-scroll">
+          <div className="flex flex-wrap justify-center items-center space-x-2">
+      {tags.map((tag) => (
+        <button
+          key={tag.name}
+          onClick={() => handleSearch(tag.name)}
+          className="my-1 px-3 py-2 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring focus:border-blue-300"
+        >
+          #{tag.name}
+        </button>
+      ))}
+    </div>
         </div>
       )}
+
 
 
       {posts.map(post => (
         <FeedPost key={post.id} {...post} windowSize={windowSize} />
       ))}
+      {nextUrl === null && <div className='text-gray-300 mb-4'>No More Posts..</div>}
     </div>
   );
 }
 
-
-// components/SearchForm.js
-{/* <div className={`${windowSize > 800 ? 'w-100' : 'w-full'} mx-auto bg-white rounded-md shadow-md p-4 mb-4 mt-3`}> */}
-const SearchForm = () => {
+const SearchForm: React.FC<{onSearch: (searchQuery: string) => void}> = ({ onSearch }) => {
+  const searchRef = useRef<HTMLInputElement>(null);
   const handleSubmit = () => {
-    // e.preventDefault();
-    // 여기에서 검색 로직을 추가하세요
-    console.log('Perform search');
+    // onSearch(search);
+    onSearch(searchRef.current?.value || '');
   };
 
   return (
     <div className="fixed top-0 left-1/2 transform -translate-x-1/2 w-full bg-gray-100 shadow-sm z-20 bg-gray-100">
-      <form onSubmit={handleSubmit} className="flex items-center justify-center w-full">
+      <form className="flex items-center justify-center w-full">
         <label htmlFor="search" className="sr-only">
           Search
         </label>
         <div className="relative" style={{ width: "400px" }}>
           <IoSearch className="absolute left-2.5 top-1/3 text-gray-500" />
           <input
+            ref={searchRef}
             type="text"
             id="search"
             className="block w-full p-3 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
@@ -158,7 +168,8 @@ const SearchForm = () => {
             required
           />
           <button
-            type="submit"
+            onClick={handleSubmit}
+            type="button"
             className="absolute right-2.5 top-1/2 transform -translate-y-1/2 bg-amber-400 hover:bg-orange-500 focus:ring-4 focus:outline-none focus:ring-blue-300 text-white font-medium rounded-lg text-sm px-4 py-2"
           >
             <HiCursorClick />

@@ -6,6 +6,7 @@ import {
 type User = {
   user_id: number|null;
   username: string;
+  profile: string;
 };
 type CommentInfo = {
   id: number|null;
@@ -16,6 +17,7 @@ type CommentInfo = {
 const defaultUser: User = {
   user_id: null,
   username: '',
+  profile: '/files/default.jpeg',
 };
 
 export const defaultReplyInfo: CommentInfo = {

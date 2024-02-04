@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { createPost } from '@/app/lib/actions/post';
 import { useRouter } from 'next/navigation';
+import { getAccessToken } from '../lib/\bjwt';
 
 export default function Page(){
   const [subject, setSubject] = useState('');
@@ -14,12 +15,18 @@ export default function Page(){
   const [state, setFormState] = useState(initialState); // 초기 옵션 하나 추가
   const router = useRouter();
 
+  useEffect(() => {
+    const token = getAccessToken();
+    if(!token){
+      router.push('/signin')
+    }
+  }, []);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
       // Perform other synchronous tasks if needed
     const formData = new FormData(e.currentTarget);
     // Dispatch the asynchronous action and wait for its completion
-    const result = await createPost(initialState, formData);
+    const result: any = await createPost(initialState, formData);
     setFormState(result);
     // Now you can proceed based on the result or perform other tasks
     if(Object.keys(result.errors).length == 0){
@@ -145,6 +152,7 @@ export default function Page(){
         <label className="block mb-4">
             내용:
             <textarea
+            placeholder='tag with "#"'
             value={content}
             name='content'
             onChange={(e) => setContent(e.target.value)}

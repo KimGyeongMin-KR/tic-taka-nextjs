@@ -55,9 +55,10 @@ export interface CommentProps {
   voted_option_id: number|null;
   like_count: number;
   hate_count: number;
-  child_count: number|null;
+  child_count: number;
   created_at: string;
   updated_at: string|null;
   like_hate_none: number;
   optionIds: number[];
+  showedreplies: CommentProps[];
 }

@@ -21,8 +21,8 @@ const links = [
   // { name: "Search", href: '/trending', icon: IoSearch, style: {fontSize: "1.5rem"}},
   { name: "Official", href: '/official', icon: BsPatchCheck, style: {fontSize: "1.5rem"}},
   { name: "Add", href: '/post', icon: FaRegSquarePlus, style: {fontSize: "1.4rem"}},
-  { name: "History", href: '/feed/history', icon: LuHistory, style: {fontSize: "1.5rem"}},
-  { name: "Profile", href: '/feed/you', icon: CgProfile, style: {fontSize: "1.4rem"}},
+  { name: "History", href: '/history', icon: LuHistory, style: {fontSize: "1.5rem"}},
+  { name: "Profile", href: '/profile', icon: CgProfile, style: {fontSize: "1.4rem"}},
 ]
 const Navbar = () => {
   const [isLargeScreen, setIsLargeScreen] = useState(false);

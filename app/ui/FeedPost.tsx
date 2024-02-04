@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { FaRegEye, FaCheck, FaHeart, FaRegHeart, FaRegComment } from "react-icons/fa";
 import { LuVote } from "react-icons/lu";
 import {
@@ -13,12 +13,13 @@ import "slick-carousel/slick/slick-theme.css";
 import './style.css'
 
 import {OptionResult, VotedResult, FeedPostProps, ImageInfo} from "@/app/lib/types/post"
-import { getAccessToken } from '../lib/actions/storage';
+// import { getAccessToken } from '../lib/actions/storage';
+import { getAccessToken } from '../lib/\bjwt';
 import { userState } from '../lib/atoms';
 import CommentModal from './Comment';
 
 
-function SampleNextArrow(props) {
+function SampleNextArrow(props: any) {
   const { className, style, onClick } = props;
   return (
     <div
@@ -29,9 +30,8 @@ function SampleNextArrow(props) {
   );
 }
 
-function SamplePrevArrow(props) {
+function SamplePrevArrow(props: any) {
   const { className, style, onClick } = props;
-  console.log(className, style, onClick)
   return (
     <div
       className={`${className}`}
@@ -162,11 +162,13 @@ const FeedPost: React.FC<FeedPostProps> = ({
   const truncatedContent = content.slice(0, 100);
   const shouldShowMoreButton = content.length > 100;
 
-  function handlePostLike(){
-    const token = getAccessToken()
-    const accessToken = token.access
-    console.log(accessToken, token, 'accessToken')
+  async function handlePostLike(){
     const apiUrl = `http://127.0.0.1:8000/post/${id}/like`;
+    const accessToken = await getAccessToken()
+    if(!accessToken){
+      push('/signin')
+      return
+    }
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     headers.append('Authorization', `Bearer ${accessToken}`);
@@ -185,7 +187,6 @@ const FeedPost: React.FC<FeedPostProps> = ({
         return response.json();
       })
       .then(data => {
-        console.log(data, 'datata')
         if(isLiked){
           setIsLiked(!isLiked)
           setLikeCount(likeCount - 1)
@@ -230,10 +231,9 @@ const FeedPost: React.FC<FeedPostProps> = ({
     setExpanded(!expanded);
   };
 
-  function handleOptionSelect(optionId: number, justView: boolean = false) {
+  async function handleOptionSelect(optionId: number, justView: boolean = false) {
     const apiUrl = `http://127.0.0.1:8000/post/${id}/vote`;
-    const tokens = getAccessToken();
-    const token = tokens.access;
+    const accessToken = await getAccessToken();
     if(votedResult != undefined){
       if(votedResult.reRequest > 2){
         alert('너무 빨리 재요청하고 있어요!')
@@ -242,7 +242,9 @@ const FeedPost: React.FC<FeedPostProps> = ({
     // 요청 헤더 설정
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
-    headers.append('Authorization', `Bearer ${token}`);
+    if(accessToken){
+      headers.append('Authorization', `Bearer ${accessToken}`);
+    }
   
     // 요청 바디 데이터 설정
     const body = JSON.stringify({ option_id: optionId });
@@ -451,35 +453,3 @@ const FeedPost: React.FC<FeedPostProps> = ({
 export default FeedPost;
 
 const gradient_bg = 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500'
-
-
-// 프론트
-//  메인 로딩 스켈레톤
-//  글 등록 ㅇ/수정/삭제  우측에 ... 표시하고 드롭다운 수정/삭제
-//  최상단 해시태그 & 링크
-
-//  로그인/회원가입/(카카오톡)
-
-// 프로필
-//  내 글 제목만(인스타 썸넬처럼)
-//  회원탈퇴
- 
-//  검색
-  // 오늘 핫한 이슈들을 기본으로 깔아주고 제목 그림처럼 만들어서 보여주기 & 상단에 검색 바
-  //  디테일로 들어가기 혹은 연관있는 게시글 연달아 보여주기?
-
-//  댓글 창
-  // 대댓
-    // 하나의 모달을 위 더 띄운다?
-    // 혹은 위로 덮어 씌우고 뒤로 가기?
-
-
-// 백엔드
-//  메인에는 내가 좋아하는 태그들 위주로 반환
-    // 1주일내로 -> 1달 -> 1년 (offset)
-    // 최근 -> 투표
-    // 봤던 것 제외
-    // 비로그인 트렌딩 쿼리
-//  내 댓글 우선 반환
-//  퍼미션 적용
-//  검색

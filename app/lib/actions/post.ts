@@ -19,7 +19,7 @@ export type State = {
     errors?: {
       title?: string[];
       content?: string[];
-      options?: string[];
+      options?: any;
     };
     message?: string | null;
   };
@@ -89,15 +89,14 @@ export async function createPost(prevState: State, formData: FormData) {
     if(errors.options){
       // const optionMessages = []
       const options = formData.getAll('options');
-      const optionMessages = Array.from({ length: options.length }).map((item, idx) => {
+      const optionMessages: any = Array.from({ length: options.length }).map((item, idx) => {
         const validateOptionField = CreateOption.safeParse({
           option: options[idx],
         });
         return validateOptionField.success ? [''] : validateOptionField.error.flatten().fieldErrors.option;
       });
-      errors.options = optionMessages
+      errors.options = optionMessages;
     }
-    console.log(errors)
     return {
       errors: errors,
       message: 'Missing Fields. Failed to Create Invoice.',

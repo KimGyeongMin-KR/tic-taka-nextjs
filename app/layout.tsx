@@ -38,6 +38,7 @@ function AppState(){
       const userState = parseJwt(accessToken);
       console.log(userState, 'usersss', Math.floor(Date.now() / 1000) - 1705824154);
       setUserState({
+        ...user,
         user_id: userState.user_id,
         username: userState.username
       })
