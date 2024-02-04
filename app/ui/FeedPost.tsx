@@ -7,7 +7,7 @@ import {
   useRecoilState, useRecoilValue,
 } from 'recoil';
 import Image from 'next/image';
-import Slider from "@ant-design/react-slick";
+import Slider, { Settings } from "@ant-design/react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import './style.css'
@@ -42,7 +42,7 @@ function SamplePrevArrow(props: any) {
 }
 
 export function SimpleSlider({ images }: { images: ImageInfo[] }) {
-    var settings = {
+    const settings: Settings = {
       dots: true,
       infinite: false,
       speed: 500,
@@ -54,8 +54,9 @@ export function SimpleSlider({ images }: { images: ImageInfo[] }) {
     };
     const s3Url = "https://tiktakamedia.s3.ap-northeast-2.amazonaws.com/"
     return (
-        <div className='mb-5'>
-          <Slider {...settings} className='w-11/12 p-2'>
+        <div className='mb-5 w-11/12 p-2'>
+          {/*  className='w-11/12 p-2' */}
+          <Slider {...settings}> 
           {images.map((option, index) => (
             <div key={index} className='w-full sm:w-1/3 md:w-1/3 lg:w-1/4 p-2'>
               <div className='relative' style={{ paddingTop: '100%', overflow: 'hidden' }}>
