@@ -14,8 +14,9 @@ export function SimpleSlider({ images }: { images: ImageInfo[] }) {
     };
     const s3Url = "https://tiktakamedia.s3.ap-northeast-2.amazonaws.com/"
     return (
-        <div className='mb-5'>
-          <Slider {...settings} className='w-11/12'>
+        <div className='mb-5 w-11/12'>
+          {/*  className='w-11/12' */}
+          <Slider {...settings}>
           {images.map((option, index) => (
             <div key={index} className='w-full sm:w-1/3 md:w-1/3 lg:w-1/4 p-2'>
               <div className='relative' style={{ paddingTop: '100%', overflow: 'hidden' }}>
