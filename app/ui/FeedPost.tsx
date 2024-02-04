@@ -56,6 +56,7 @@ export function SimpleSlider({ images }: { images: ImageInfo[] }) {
     return (
         <div className='mb-5 w-11/12 p-2'>
           {/*  className='w-11/12 p-2' */}
+          
           <Slider {...settings}> 
           {images.map((option, index) => (
             <div key={index} className='w-full sm:w-1/3 md:w-1/3 lg:w-1/4 p-2'>
