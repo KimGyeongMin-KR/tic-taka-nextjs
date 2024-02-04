@@ -11,7 +11,17 @@ export default function Page(){
   // const [images, setImages] = useState<string[]>([]);
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-  const initialState = { message: null, errors: {} };
+  type State = {
+    errors?: {
+      title?: string[];
+      content?: string[];
+      options?: string[];
+      images?: string[];
+      // Add other error types as needed
+    };
+    message?: string | null;
+  };
+  const initialState: State = { message: null, errors: {} };
   const [state, setFormState] = useState(initialState); // 초기 옵션 하나 추가
   const router = useRouter();
 

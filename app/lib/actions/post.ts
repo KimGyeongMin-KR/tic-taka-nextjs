@@ -20,6 +20,7 @@ export type State = {
       title?: string[];
       content?: string[];
       options?: any;
+      images?: any;
     };
     message?: string | null;
   };
