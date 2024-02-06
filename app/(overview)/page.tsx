@@ -7,7 +7,7 @@ import { IoSearch } from "react-icons/io5";
 import { HiCursorClick } from "react-icons/hi";
 import { getAccessToken } from '../lib/\bjwt';
 
-const tagUrl = "http://server.tiikiik.com/post/tag";
+const tagUrl = "https://server.tiikiik.com/post/tag";
 
 export default function Page() {
   const [posts, setPosts] = useState<FeedPostProps[]>([]);
@@ -16,7 +16,7 @@ export default function Page() {
   const [searchQuery, setSearchQuery] = useState<string|null>('');
   
   // const [page, setPage] = useState<number>(1); // 현재 페이지
-  const [nextUrl, setNextUrl] = useState<string | null>('http://server.tiikiik.com/post/'); // 현재 페이지
+  const [nextUrl, setNextUrl] = useState<string | null>('https://server.tiikiik.com/post/'); // 현재 페이지
   
   useEffect(() => {
     const handleResize = () => {

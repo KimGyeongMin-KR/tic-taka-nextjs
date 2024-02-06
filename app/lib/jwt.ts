@@ -13,7 +13,7 @@ export async function getAccessToken() {
     const refreshHeaders = new Headers();
     refreshHeaders.append('Content-Type', 'application/json');
     const response = await fetch(
-      "http://server.tiikiik.com/user/api/token/refresh/",
+      "https://server.tiikiik.com/user/api/token/refresh/",
       {method: "POST", headers: refreshHeaders, body: JSON.stringify({refresh: tokenObject.refresh})}
     );
     if(!response.ok){

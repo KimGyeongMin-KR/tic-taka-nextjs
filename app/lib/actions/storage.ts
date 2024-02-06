@@ -13,7 +13,7 @@ export async function setAccessToken(tokens: Object){
 
 // 토큰을 가져오는 함수
 export async function fetchAccessToken() {
-    const apiUrl = "http://server.tiikiik.com/user/api/token/";
+    const apiUrl = "https://server.tiikiik.com/user/api/token/";
     const credentials = {
       username: "admin1",
       password: "rlarudals2@"

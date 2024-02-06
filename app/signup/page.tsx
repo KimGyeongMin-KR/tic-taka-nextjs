@@ -85,7 +85,7 @@ const Signup = () => {
       headers.append('Content-Type', 'application/json');
   
       const response = await fetch(
-        'http://server.tiikiik.com/user/',
+        'https://server.tiikiik.com/user/',
         {method: "POST", headers: headers, body: JSON.stringify({
           username: signupData.username,
           password: signupData.password,

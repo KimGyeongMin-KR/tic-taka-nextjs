@@ -43,7 +43,7 @@ const Login: React.FC = () => {
     headers.append('Content-Type', 'application/json');
 
     const response = await fetch(
-      'http://server.tiikiik.com/user/api/token/',
+      'https://server.tiikiik.com/user/api/token/',
       {method: "POST", headers: headers, body: JSON.stringify({
         username: loginData.username,
         password: loginData.password

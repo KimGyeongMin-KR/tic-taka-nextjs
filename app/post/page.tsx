@@ -44,7 +44,7 @@ export default function Page(){
       const tokensString = localStorage.getItem('TIKTAKA');
       const tokens = tokensString ? JSON.parse(tokensString) : null
       const accessToken = tokens ? tokens.access : null
-      const apiUrl = "http://server.tiikiik.com/post/";
+      const apiUrl = "https://server.tiikiik.com/post/";
       const credentials = {
         subject: subject,
         content: content,
@@ -323,7 +323,7 @@ export default function Page(){
             />
             <div className="flex items-center justify-center bg-gray-400 text-white p-2 rounded">
               <svg
-                xmlns="http://www.w3.org/2000/svg"
+                xmlns="https://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
