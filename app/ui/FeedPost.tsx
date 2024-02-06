@@ -97,7 +97,7 @@ const PostOptionModal = ({ closeModal, postId } : {closeModal: any, postId: numb
       headers.append('Content-Type', 'application/json');
       if (accessToken){
         headers.append('Authorization', `Bearer ${accessToken}`);
-        const apiUrl = `http://server.tiikiik.com/post/${postId}/`  
+        const apiUrl = `https://server.tiikiik.com/post/${postId}/`  
         const response = await fetch(apiUrl, {
           method: 'DELETE',
           headers: headers,

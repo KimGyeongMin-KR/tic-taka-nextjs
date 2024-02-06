@@ -135,7 +135,7 @@ const CommentModal = ({ onClose, windowSize, postId, optionIds }: {
     if (reply.id !== null && reply){
       commentData.parent_id = reply.id
     }
-    const commentPostUrl = (reply.id !== null) ? `http://server.tiikiik.com/post/${postId}/comment/${reply.id}/` : `http://server.tiikiik.com/post/${postId}/comment`;
+    const commentPostUrl = (reply.id !== null) ? `https://server.tiikiik.com/post/${postId}/comment/${reply.id}/` : `https://server.tiikiik.com/post/${postId}/comment`;
     console.log(commentPostUrl, 'cc')
     const response = await fetch(
       commentPostUrl,
@@ -260,7 +260,7 @@ const Comment: React.FC<CommentProps> = ({
   const [reply, setReply] = useRecoilState(replyState);
   const [commentReacted, setCommentReact] = useState(like_hate_none);
   const [replies, setReplies] = useState<CommentProps[]>(showedreplies);
-  const [nextUrl, setNextUrl] = useState<string|null>(`http://server.tiikiik.com/post/${post_id}/comment/${id}/`);
+  const [nextUrl, setNextUrl] = useState<string|null>(`https://server.tiikiik.com/post/${post_id}/comment/${id}/`);
   const user = useRecoilValue(userState);
   // 숨겨져있으면 child카운트, 아니라면 childcount에서 현재 길이 빼기
   const handleLoadReplies = async () => {
@@ -305,7 +305,7 @@ const Comment: React.FC<CommentProps> = ({
     if(token){
       headers.append('Authorization', `Bearer ${token.access}`);
     }
-    const response = await fetch(`http://server.tiikiik.com/post/${post_id}/comment/${id}/`, {method: "GET", headers: headers});
+    const response = await fetch(`https://server.tiikiik.com/post/${post_id}/comment/${id}/`, {method: "GET", headers: headers});
     const data = await response.json();
     return data
   }
@@ -331,7 +331,7 @@ const Comment: React.FC<CommentProps> = ({
     if(commentReacted !== 1){
         body.like_hate_none = 1
     }
-    const response = await fetch(`http://server.tiikiik.com/post/${post_id}/comment/${id}/like`, {method: "POST", headers: headers, body: JSON.stringify(body)});
+    const response = await fetch(`https://server.tiikiik.com/post/${post_id}/comment/${id}/like`, {method: "POST", headers: headers, body: JSON.stringify(body)});
     if(!response.ok){
       return
     }
@@ -352,7 +352,7 @@ const Comment: React.FC<CommentProps> = ({
     if(commentReacted !== -1){
         body.like_hate_none = -1
     }
-    const response = await fetch(`http://server.tiikiik.com/post/${post_id}/comment/${id}/like`, {method: "POST", headers: headers, body: JSON.stringify(body)});
+    const response = await fetch(`https://server.tiikiik.com/post/${post_id}/comment/${id}/like`, {method: "POST", headers: headers, body: JSON.stringify(body)});
     if(!response.ok){
       return
     }

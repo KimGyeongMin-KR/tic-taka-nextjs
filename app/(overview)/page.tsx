@@ -31,7 +31,7 @@ export default function Page() {
   }, []);
 
   const handleSearch = (searchQuery: string) => {
-    const newNextUrl = `http://server.tiikiik.com/post/?search=${searchQuery}`;
+    const newNextUrl = `https://server.tiikiik.com/post/?search=${searchQuery}`;
     setNextUrl(newNextUrl);
     setPosts([]);
     setSearchQuery(searchQuery);
