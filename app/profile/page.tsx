@@ -10,16 +10,24 @@ import {
   useRecoilState, useRecoilValue,
 } from 'recoil';
 import { userState } from '../lib/atoms';
-
+import { useRouter } from 'next/router';
 const ProfilePage = () => {
   const user = useRecoilValue(userState);
 
   const [posts, setPosts] = useState<FeedPostProps[]>([]);
   const [windowSize, setWindowSize] = useState((typeof window !== 'undefined' ? window.innerWidth : 0));
-  
+  const router = useRouter();
   // const [page, setPage] = useState<number>(1); // 현재 페이지
   const [nextUrl, setNextUrl] = useState<string | null>('https://server.tiikiik.com/post/?type=profile');
   
+  useEffect(() => {
+    const token = getAccessToken();
+    if(!token){
+      alert("로그인이 필요합니다.")
+      router.push('/signin')
+    }
+  }, []);
+
   useEffect(() => {
     fetchData();
     const handleResize = () => {
