@@ -28,6 +28,7 @@ export default function Page(){
   useEffect(() => {
     const token = getAccessToken();
     if(!token){
+      alert("로그인이 필요합니다.")
       router.push('/signin')
     }
   }, []);

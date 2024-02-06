@@ -29,7 +29,7 @@ const CommentModal = ({ onClose, windowSize, postId, optionIds }: {
   const [loading, setLoading] = useState(false);
   const [comments, setComments] = useState<CommentProps[]>([]); // Initial comments
   const containerRef = useRef<HTMLDivElement>(null);
-  const [nextUrl, setNextUrl] = useState<string|null>(`http://127.0.0.1:8000/post/${postId}/comment`);
+  const [nextUrl, setNextUrl] = useState<string|null>(`https://server.tiikiik.com:8000/post/${postId}/comment`);
   
   useEffect(() => {
     // 초기 데이터 로딩
