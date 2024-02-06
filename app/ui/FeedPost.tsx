@@ -165,7 +165,7 @@ const FeedPost: React.FC<FeedPostProps> = ({
   const shouldShowMoreButton = content.length > 100;
 
   async function handlePostLike(){
-    const apiUrl = `https://server.tiikiik.com:8000/post/${id}/like`;
+    const apiUrl = `https://server.tiikiik.com/post/${id}/like`;
     const accessToken = await getAccessToken()
     if(!accessToken){
       push('/signin')
@@ -234,7 +234,7 @@ const FeedPost: React.FC<FeedPostProps> = ({
   };
 
   async function handleOptionSelect(optionId: number, justView: boolean = false) {
-    const apiUrl = `https://server.tiikiik.com:8000/post/${id}/vote`;
+    const apiUrl = `https://server.tiikiik.com/post/${id}/vote`;
     const accessToken = await getAccessToken();
     if(votedResult != undefined){
       if(votedResult.reRequest > 2){
