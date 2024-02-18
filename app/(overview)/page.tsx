@@ -7,7 +7,7 @@ import { IoSearch } from "react-icons/io5";
 import { HiCursorClick } from "react-icons/hi";
 import { getAccessToken } from '../lib/\bjwt';
 
-const tagUrl = "https://server.tiikiik.com/post/tag";
+const tagUrl = `${process.env.NEXT_PUBLIC_API_URL}/post/tag`;
 
 export default function Page() {
   const [posts, setPosts] = useState<FeedPostProps[]>([]);
@@ -16,7 +16,7 @@ export default function Page() {
   const [searchQuery, setSearchQuery] = useState<string|null>('');
   
   // const [page, setPage] = useState<number>(1); // 현재 페이지
-  const [nextUrl, setNextUrl] = useState<string | null>('https://server.tiikiik.com/post/'); // 현재 페이지
+  const [nextUrl, setNextUrl] = useState<string | null>(`${process.env.NEXT_PUBLIC_API_URL}/post/`); // 현재 페이지
   
   useEffect(() => {
     const handleResize = () => {
@@ -31,7 +31,7 @@ export default function Page() {
   }, []);
 
   const handleSearch = (searchQuery: string) => {
-    const newNextUrl = `https://server.tiikiik.com/post/?search=${searchQuery}`;
+    const newNextUrl = `${process.env.NEXT_PUBLIC_API_URL}/post/?search=${searchQuery}`;
     setNextUrl(newNextUrl);
     setPosts([]);
     setSearchQuery(searchQuery);
@@ -43,7 +43,7 @@ export default function Page() {
 
   useEffect(() => {
     // 초기 데이터 로딩
-    fetchData()
+    // fetchData()
     const fetchTag = async () => {
       try {
         const response = await fetch(tagUrl, { method: "GET"});

@@ -97,7 +97,7 @@ const PostOptionModal = ({ closeModal, postId } : {closeModal: any, postId: numb
       headers.append('Content-Type', 'application/json');
       if (accessToken){
         headers.append('Authorization', `Bearer ${accessToken}`);
-        const apiUrl = `https://server.tiikiik.com/post/${postId}/`  
+        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/post/${postId}/`  
         const response = await fetch(apiUrl, {
           method: 'DELETE',
           headers: headers,
@@ -165,7 +165,7 @@ const FeedPost: React.FC<FeedPostProps> = ({
   const shouldShowMoreButton = content.length > 100;
 
   async function handlePostLike(){
-    const apiUrl = `https://server.tiikiik.com/post/${id}/like`;
+    const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/post/${id}/like`;
     const accessToken = await getAccessToken()
     if(!accessToken){
       push('/signin')
@@ -234,7 +234,7 @@ const FeedPost: React.FC<FeedPostProps> = ({
   };
 
   async function handleOptionSelect(optionId: number, justView: boolean = false) {
-    const apiUrl = `https://server.tiikiik.com/post/${id}/vote`;
+    const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/post/${id}/vote`;
     const accessToken = await getAccessToken();
     if(votedResult != undefined){
       if(votedResult.reRequest > 2){

@@ -9,16 +9,32 @@ import { FeedPostProps } from '../lib/types/post';
 import {
   useRecoilState, useRecoilValue,
 } from 'recoil';
+import { useRouter } from 'next/navigation';
 import { userState } from '../lib/atoms';
 
 const ProfilePage = () => {
+  const { push } = useRouter();
+
   const user = useRecoilValue(userState);
 
   const [posts, setPosts] = useState<FeedPostProps[]>([]);
   const [windowSize, setWindowSize] = useState((typeof window !== 'undefined' ? window.innerWidth : 0));
   
   // const [page, setPage] = useState<number>(1); // 현재 페이지
-  const [nextUrl, setNextUrl] = useState<string | null>('https://server.tiikiik.com/post/?type=profile');
+  const [nextUrl, setNextUrl] = useState<string | null>(`${process.env.NEXT_PUBLIC_API_URL}/post/?type=profile`);
+  
+  useEffect(() => {
+    const checkToken = async () => {
+      const token = await getAccessToken();
+        
+      console.log(token, 'toto')
+      if(token === undefined){
+        alert("로그인이 필요합니다.")
+        push('/signin')
+      }
+    }
+    checkToken();
+  }, []);
   
   useEffect(() => {
     fetchData();

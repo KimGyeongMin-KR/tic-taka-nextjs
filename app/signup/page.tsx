@@ -85,7 +85,7 @@ const Signup = () => {
       headers.append('Content-Type', 'application/json');
   
       const response = await fetch(
-        'https://server.tiikiik.com/user/',
+        `${process.env.NEXT_PUBLIC_API_URL}/user/`,
         {method: "POST", headers: headers, body: JSON.stringify({
           username: signupData.username,
           password: signupData.password,

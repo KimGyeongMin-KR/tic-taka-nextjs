@@ -26,11 +26,16 @@ export default function Page(){
   const router = useRouter();
 
   useEffect(() => {
-    const token = getAccessToken();
-    if(!token){
-      alert("로그인이 필요합니다.")
-      router.push('/signin')
+    const checkToken = async () => {
+      const token = await getAccessToken();
+      
+      console.log(token, 'toto')
+      if(!token){
+        alert("로그인이 필요합니다.")
+        router.push('/signin')
+      }
     }
+    checkToken();
   }, []);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -45,7 +50,7 @@ export default function Page(){
       const tokensString = localStorage.getItem('TIKTAKA');
       const tokens = tokensString ? JSON.parse(tokensString) : null
       const accessToken = tokens ? tokens.access : null
-      const apiUrl = "https://server.tiikiik.com/post/";
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/post/`;
       const credentials = {
         subject: subject,
         content: content,
